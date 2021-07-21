@@ -20,14 +20,25 @@ document.addEventListener('DOMContentLoaded',()=>{
     consultarCriptomonedas();
 })
 
-function consultarCriptomonedas(){
+async function consultarCriptomonedas(){
     const api_key = 'dbdb2456e7502d4dddd9893ef8d2c7d79c6f6f964fbc9de82f058e23600b5f99'
     const url = `https://min-api.cryptocompare.com/data/top/mktcapfull?limit=10&tsym=USD&apy_key=${api_key}`
 
-    fetch(url)
-        .then(respuesta => respuesta.json())
-        .then(resultado => obtenerCriptomonedas(resultado.Data))
-        .then(criptomonedas => selectCriptomonedas(criptomonedas))
+    // fetch(url)
+    //     .then(respuesta => respuesta.json())
+    //     .then(resultado => obtenerCriptomonedas(resultado.Data))
+    //     .then(criptomonedas => selectCriptomonedas(criptomonedas))
+
+    try {
+      const respuesta = await fetch(url)  ;
+      const resultado = await respuesta.json();
+      const criptomonedas = await obtenerCriptomonedas(resultado.data);
+      selectCriptomonedas(criptomonedas)
+    } catch (error) {
+        console.log(error)
+    }
+        
+        
 }
 
 function selectCriptomonedas(criptomonedas){
@@ -71,14 +82,25 @@ function mostrarAlerta(msg){
 }
 
 
-function consultarAPI(){
+async function consultarAPI(){
     const {moneda,criptomoneda} = objBusqueda;
     const api_key = 'dbdb2456e7502d4dddd9893ef8d2c7d79c6f6f964fbc9de82f058e23600b5f99'
     const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomoneda}&tsyms=${moneda}&api_key=${api_key}`;
     mostrarSpinner();
-    fetch(url)
-        .then(respuesta => respuesta.json())
-        .then(cotizacion => mostrarCotizacionHTML(cotizacion.DISPLAY[criptomoneda][moneda]))
+    // fetch(url)
+    //     .then(respuesta => respuesta.json())
+    //     .then(cotizacion => mostrarCotizacionHTML(cotizacion.DISPLAY[criptomoneda][moneda]))
+    
+    
+    try {
+        const respuesta = await fetch(url);
+        const cotizacion = await respuesta.json();
+        mostrarCotizacionHTML(cotizacion.DISPLAY[criptomoneda][moneda]);
+    } catch (error) {
+        console.log(error)
+        
+    }
+        
 }
 
 function mostrarCotizacionHTML(cotizacion){
